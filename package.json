@@ -10,5 +10,8 @@
   "dependencies": {},
   "devDependencies": {
     "vite": "^7.1.7"
+  },
+  "allowScripts": {
+    "esbuild": true
   }
 }

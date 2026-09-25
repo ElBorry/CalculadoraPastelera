@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Calculadora simple de costos, rendimiento y precio de venta para pastelería." />
+    <title>Calculadora de Pastelería</title>
+    <script type="module" crossorigin src="/assets/index-DJdyWkuX.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-C2XRdTRV.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hero no-print">
+        <div class="hero-copy">
+          <p class="eyebrow">Costos simples y claros</p>
+          <h1><span aria-hidden="true">🍰</span> Calculadora de Pastelería</h1>
+          <p>Cargá lo que comprás, cuánto usás y cómo presentás cada producto. La calculadora te muestra el costo real, el precio sugerido y cuánto te queda de ganancia.</p>
+        </div>
+        <div class="hero-actions">
+          <button id="newRecipeTopBtn" class="secondary" type="button">＋ Nueva receta</button>
+          <button id="showRecipesBtn" class="secondary" type="button">📒 Mis recetas <span id="savedCount" class="button-count">0</span></button>
+        </div>
+      </header>
+
+      <nav class="progress-nav no-print" aria-label="Pasos de la calculadora">
+        <a href="#step-1"><span>1</span><strong>Ingredientes</strong><small>Qué comprás</small></a>
+        <a href="#step-2"><span>2</span><strong>Receta</strong><small>Qué usás</small></a>
+        <a href="#step-3"><span>3</span><strong>Costos</strong><small>Presentación y método</small></a>
+        <a href="#step-4"><span>4</span><strong>Resultado</strong><small>Cuánto cuesta y vendés</small></a>
+      </nav>
+
+      <section id="step-1" class="step-section card no-print">
+        <div class="section-head">
+          <div class="section-title-wrap">
+            <span class="step-badge">1</span>
+            <div>
+              <h2>Cargá tus ingredientes</h2>
+              <p>Ingresá cómo los comprás. Nosotros calculamos automáticamente cuánto cuesta cada gramo, ml o unidad.</p>
+            </div>
+          </div>
+          <button id="addIngredientBtn" class="secondary" type="button">＋ Agregar ingrediente</button>
+        </div>
+
+        <div class="helper-banner"><strong>Ejemplo:</strong> comprás 1 kg de harina a $1.500 → cargá <b>1</b>, <b>kg</b> y <b>$1.500</b>.</div>
+
+        <div class="ingredient-head desktop-row-head" aria-hidden="true">
+          <span>Ingrediente</span><span>Cantidad que comprás</span><span>Unidad</span><span>Cuánto pagás</span><span>Costo base</span><span></span>
+        </div>
+        <div id="ingredientsList" class="editable-list"></div>
+        <p id="ingredientsEmpty" class="empty-state" hidden>No hay ingredientes cargados.</p>
+        <button id="addIngredientBottomBtn" class="secondary full-width add-bottom" type="button">＋ Agregar otro ingrediente</button>
+      </section>
+
+      <section id="step-2" class="step-section card no-print">
+        <div class="section-head">
+          <div class="section-title-wrap">
+            <span class="step-badge">2</span>
+            <div>
+              <h2>Armá la receta</h2>
+              <p>Elegí cuánto usás de cada ingrediente y cuántas unidades finales produce la preparación.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="recipe-meta-grid">
+          <label class="field">
+            <span>Nombre de la receta</span>
+            <input id="recipeName" type="text" value="Torta de Chocolate" placeholder="Ej: Red Velvet" />
+          </label>
+          <label class="field">
+            <span>¿Cuántas unidades salen?</span>
+            <input id="servings" type="number" min="1" step="1" value="1" />
+            <small>Ej: si salen 5 bizcochuelos, cargá 5.</small>
+          </label>
+        </div>
+
+        <div class="recipe-head desktop-row-head" aria-hidden="true">
+          <span>Ingrediente</span><span>Cantidad usada</span><span>Unidad</span><span>Costo en receta</span><span></span>
+        </div>
+        <div id="recipeList" class="editable-list"></div>
+        <p id="recipeEmpty" class="empty-state" hidden>La receta todavía no tiene ingredientes.</p>
+        <button id="addRecipeItemBtn" class="secondary full-width" type="button">＋ Agregar ingrediente a la receta</button>
+
+        <div class="batch-preview">
+          <span>Costo de ingredientes de toda la receta</span>
+          <strong id="batchIngredientPreview">$ 0</strong>
+          <small id="unitIngredientPreview">$ 0 por unidad</small>
+        </div>
+      </section>
+
+      <section id="step-3" class="step-section card no-print">
+        <div class="section-head">
+          <div class="section-title-wrap">
+            <span class="step-badge">3</span>
+            <div>
+              <h2>Completá presentación y forma de calcular el precio</h2>
+              <p>Estos valores se cargan <strong>por cada unidad que vendés</strong>. Si algo no aplica, dejalo en $0.</p>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="subheading">Presentación por unidad</h3>
+        <div class="presentation-grid">
+          <label class="mini-cost"><span>📦 Cajita</span><div class="money-input"><span>$</span><input id="boxCost" type="number" min="0" step="0.01" value="0" /></div></label>
+          <label class="mini-cost"><span>🎀 Cinta / moño</span><div class="money-input"><span>$</span><input id="ribbonCost" type="number" min="0" step="0.01" value="0" /></div></label>
+          <label class="mini-cost"><span>🪪 Tarjeta impresa</span><div class="money-input"><span>$</span><input id="cardCost" type="number" min="0" step="0.01" value="0" /></div></label>
+          <label class="mini-cost"><span>🍰 Bandejita</span><div class="money-input"><span>$</span><input id="trayCost" type="number" min="0" step="0.01" value="350" /></div></label>
+          <label class="mini-cost"><span>🛍️ Bolsita</span><div class="money-input"><span>$</span><input id="bagCost" type="number" min="0" step="0.01" value="0" /></div></label>
+          <label class="mini-cost"><span>🧃 Bebida / jugo</span><div class="money-input"><span>$</span><input id="drinkCost" type="number" min="0" step="0.01" value="1300" /></div></label>
+        </div>
+
+        <div class="custom-costs-wrap">
+          <div class="custom-costs-head"><div><h3>Otros costos por unidad</h3><p>Decoración, etiqueta, comisión, traslado u otro.</p></div><button id="addUnitExtraBtn" class="secondary" type="button">＋ Agregar</button></div>
+          <div id="unitExtrasList" class="custom-costs-list"></div>
+        </div>
+
+        <div class="batch-costs">
+          <h3 class="subheading">Otros costos del lote completo</h3>
+          <p class="section-note">Opcional. Se reparten automáticamente entre las unidades producidas.</p>
+          <div class="production-grid">
+            <label class="mini-cost"><span>👩‍🍳 Mano de obra</span><div class="money-input"><span>$</span><input id="labor" type="number" min="0" step="0.01" value="0" /></div></label>
+            <label class="mini-cost"><span>⚡ Gas / electricidad</span><div class="money-input"><span>$</span><input id="energy" type="number" min="0" step="0.01" value="0" /></div></label>
+            <label class="mini-cost"><span>➕ Otros del lote</span><div class="money-input"><span>$</span><input id="otherBatch" type="number" min="0" step="0.01" value="0" /></div></label>
+          </div>
+        </div>
+
+        <div class="pricing-method-card">
+          <div class="pricing-title">
+            <div><h3>¿Cómo querés calcular el precio de venta?</h3><p>Podés usar un porcentaje de ganancia o el método multiplicador que ya usa tu cliente.</p></div>
+          </div>
+          <div class="method-tabs" role="radiogroup" aria-label="Método de precio">
+            <label class="method-option"><input type="radio" name="pricingMethod" value="percent" checked /><span><strong>Por % de ganancia</strong><small>Ej: costo real + 50%</small></span></label>
+            <label class="method-option"><input type="radio" name="pricingMethod" value="multiplier" /><span><strong>Por multiplicador</strong><small>Ej: costo de ingredientes × 3 ÷ unidades</small></span></label>
+          </div>
+
+          <div id="percentSettings" class="method-settings">
+            <label><span>Ganancia sobre el costo real</span><div class="suffix-input"><input id="profitPercent" type="number" min="0" max="1000" step="1" value="50" /><span>%</span></div></label>
+            <div class="quick-margins"><button type="button" data-profit="30">30%</button><button type="button" data-profit="50">50%</button><button type="button" data-profit="70">70%</button><button type="button" data-profit="100">100%</button></div>
+          </div>
+
+          <div id="multiplierSettings" class="method-settings" hidden>
+            <label><span>Multiplicar costo de ingredientes por</span><div class="suffix-input multiplier-input"><span>×</span><input id="multiplier" type="number" min="0" max="100" step="0.1" value="3" /></div></label>
+            <p class="method-example" id="multiplierExample">Costo de ingredientes × 3 ÷ unidades = precio por unidad. Los extras se descuentan después para mostrar la ganancia real.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="step-4" class="step-section result-section">
+        <div class="result-intro no-print">
+          <span class="step-badge">4</span>
+          <div><h2>Resultado final</h2><p>Acá ves cuánto cuesta realmente cada unidad, a cuánto venderla y cuánto te queda.</p></div>
+        </div>
+
+        <div class="print-title"><h2 id="printRecipeName">Receta</h2><p>Resumen de costos y precio sugerido</p></div>
+
+        <div class="result-layout">
+          <article class="card calculation-card">
+            <h3>Cómo se forma el costo</h3>
+            <div class="summary-row"><span>Ingredientes del lote</span><strong id="ingredientBatchCost">$ 0</strong></div>
+            <div class="summary-row"><span>Ingredientes por unidad</span><strong id="ingredientUnitCost">$ 0</strong></div>
+            <div class="summary-row"><span>Presentación por unidad</span><strong id="presentationUnitCost">$ 0</strong></div>
+            <div class="summary-row"><span>Otros costos del lote</span><strong id="batchExtrasCost">$ 0</strong></div>
+            <div class="summary-row"><span>Otros costos del lote por unidad</span><strong id="batchExtrasPerUnit">$ 0</strong></div>
+            <div class="summary-row total"><span>Costo real por unidad</span><strong id="realUnitCost">$ 0</strong></div>
+            <div class="summary-row"><span>Costo real del lote</span><strong id="realBatchCost">$ 0</strong></div>
+          </article>
+
+          <article class="price-result-card" aria-live="polite">
+            <p class="result-kicker">PRECIO SUGERIDO POR UNIDAD</p>
+            <strong id="suggestedUnitPrice" class="sale-price">$ 0</strong>
+            <p id="pricingExplanation" class="pricing-explanation"></p>
+
+            <div class="hero-numbers">
+              <div><span>Costo real</span><strong id="heroCost">$ 0</strong></div>
+              <div><span>Ganancia real</span><strong id="realProfitUnit">$ 0</strong></div>
+              <div><span>Precio de venta</span><strong id="heroPrice">$ 0</strong></div>
+            </div>
+
+            <div class="profit-details">
+              <div><span>Ganancia total si vendés todo el lote</span><strong id="totalProfit">$ 0</strong></div>
+              <div><span>Ganancia sobre costo real</span><strong id="actualMarkup">0%</strong></div>
+              <div><span>Margen sobre precio de venta</span><strong id="actualMargin">0%</strong></div>
+            </div>
+
+            <div class="result-actions no-print">
+              <button id="saveRecipeBtn" class="primary" type="button">💾 Guardar receta</button>
+              <button id="duplicateRecipeBtn" class="result-secondary" type="button">⧉ Duplicar</button>
+              <button id="printBtn" class="result-secondary" type="button">🖨️ Imprimir / PDF</button>
+              <button id="newRecipeBtn" class="result-secondary" type="button">＋ Nueva receta</button>
+            </div>
+            <p id="statusMessage" class="status no-print" aria-live="polite"></p>
+          </article>
+        </div>
+      </section>
+
+      <section id="savedRecipesSection" class="card saved-section no-print" hidden>
+        <div class="section-head">
+          <div class="section-title-wrap"><span class="saved-icon">📒</span><div><h2>Mis recetas</h2><p>Abrí, editá, duplicá o eliminá una receta guardada.</p></div></div>
+          <button id="closeRecipesBtn" class="secondary" type="button">Cerrar</button>
+        </div>
+        <div id="savedRecipes" class="saved-grid"></div>
+      </section>
+    </main>
+  </body>
+</html>
