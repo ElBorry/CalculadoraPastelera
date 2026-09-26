@@ -198,6 +198,74 @@ function recalc() {
     ? `${currency.format(r.batchIngredients)} × ${num($('multiplier').value)} ÷ ${r.qty} = ${currency.format(r.pricePerUnit)} por unidad. La ganancia real descuenta presentación y otros costos.`
     : `${currency.format(r.realUnitCost)} + ${num($('profitPercent').value)}% = ${currency.format(r.pricePerUnit)} por unidad.`;
   document.querySelectorAll('[data-profit]').forEach(b => b.classList.toggle('active', Number(b.dataset.profit) === num($('profitPercent').value)));
+
+  if ($('liveCost')) $('liveCost').textContent = currency.format(r.realUnitCost);
+  if ($('livePrice')) $('livePrice').textContent = currency.format(r.pricePerUnit);
+  if ($('liveProfit')) {
+    $('liveProfit').textContent = currency.format(r.profitPerUnit);
+    $('liveProfit').classList.toggle('negative-live', r.profitPerUnit < 0);
+  }
+  if ($('liveContext')) {
+    const name = $('recipeName').value.trim() || 'Receta sin nombre';
+    $('liveContext').textContent = `${name} · ${r.qty} ${r.qty === 1 ? 'unidad' : 'unidades'}`;
+  }
+  if ($('step1Compact')) $('step1Compact').textContent = `${ingredients.length} ${ingredients.length === 1 ? 'ingrediente cargado' : 'ingredientes cargados'}`;
+  if ($('step2Compact')) $('step2Compact').textContent = `${recipeItems.length} ${recipeItems.length === 1 ? 'ingrediente usado' : 'ingredientes usados'} · ${currency.format(r.batchIngredients)} el lote`;
+  if ($('step3Compact')) $('step3Compact').textContent = `Presentación ${currency.format(r.presentationPerUnit)} · costo real ${currency.format(r.realUnitCost)}`;
+  if ($('step4Compact')) $('step4Compact').textContent = `Vendé a ${currency.format(r.pricePerUnit)} · ganancia ${currency.format(r.profitPerUnit)}`;
+}
+
+
+const PUBLIC_URL = 'https://calculadora-pastelera-two.vercel.app/';
+function shareUrl() {
+  const local = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+  return local ? PUBLIC_URL : `${window.location.origin}${window.location.pathname}`;
+}
+
+function resultShareText() {
+  const r = calculate();
+  const name = $('recipeName').value.trim() || 'Mi receta';
+  return [
+    `🍰 ${name} — DulceCuenta`,
+    `Costo real por unidad: ${currency.format(r.realUnitCost)}`,
+    `Precio sugerido: ${currency.format(r.pricePerUnit)}`,
+    `Ganancia estimada por unidad: ${currency.format(r.profitPerUnit)}`,
+    `Rendimiento: ${r.qty} ${r.qty === 1 ? 'unidad' : 'unidades'}`,
+  ].join('\n');
+}
+
+async function copyText(text, successMessage = 'Enlace copiado.') {
+  try {
+    if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(text);
+    else {
+      const area = document.createElement('textarea');
+      area.value = text; area.setAttribute('readonly', ''); area.style.position = 'absolute'; area.style.left = '-9999px';
+      document.body.append(area); area.select(); document.execCommand('copy'); area.remove();
+    }
+    showStatus(successMessage);
+  } catch { showStatus('No pudimos copiar automáticamente. Copiá la dirección desde el navegador.', true); }
+}
+
+async function shareSite() {
+  const data = { title: 'DulceCuenta', text: 'Calculá el costo real, el precio de venta y la ganancia de tus recetas de pastelería.', url: shareUrl() };
+  try {
+    if (navigator.share) await navigator.share(data);
+    else await copyText(data.url, 'Enlace de DulceCuenta copiado.');
+  } catch (error) { if (error?.name !== 'AbortError') await copyText(data.url, 'Enlace de DulceCuenta copiado.'); }
+}
+
+async function shareResult() {
+  const text = resultShareText();
+  const data = { title: `${$('recipeName').value.trim() || 'Receta'} | DulceCuenta`, text, url: shareUrl() };
+  try {
+    if (navigator.share) await navigator.share(data);
+    else await copyText(`${text}\n${data.url}`, 'Resultado copiado. Ya podés pegarlo donde quieras.');
+  } catch (error) { if (error?.name !== 'AbortError') await copyText(`${text}\n${data.url}`, 'Resultado copiado.'); }
+}
+
+function shareWhatsApp() {
+  const message = `${resultShareText()}\n\nCalculado con DulceCuenta: ${shareUrl()}`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
 }
 
 function snapshot() {
@@ -231,7 +299,7 @@ function applyRecipe(recipe, duplicate = false) {
   $('profitPercent').value = num(recipe.pricing?.profitPercent ?? 50); $('multiplier').value = num(recipe.pricing?.multiplier ?? 3);
   const method = recipe.pricing?.method || 'percent'; const radio = document.querySelector(`input[name="pricingMethod"][value="${method}"]`); if (radio) radio.checked = true;
   syncMethodUI(); renderRecipe(); recalc(); $('savedRecipesSection').hidden = true; showStatus(duplicate ? 'Copia creada. Cambiá lo que necesites y guardala.' : `Editando “${recipe.name}”.`);
-  $('step-2').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (isMobileAccordion()) openAccordionStep(2, true); else $('step-2').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function loadRecipe(id) { const r = load(STORAGE_RECIPES, []).find(x => x.id === id); if (r) applyRecipe(r, false); }
@@ -254,10 +322,82 @@ function newRecipe() {
   currentRecipeId = null; $('recipeName').value = ''; recipeItems = []; $('servings').value = 1;
   ['boxCost','ribbonCost','cardCost','trayCost','bagCost','drinkCost','labor','energy','otherBatch'].forEach(id => $(id).value = 0);
   unitExtras = []; renderUnitExtras(); $('profitPercent').value = 50; $('multiplier').value = 3;
-  document.querySelector('input[name="pricingMethod"][value="percent"]').checked = true; syncMethodUI(); renderRecipe(); recalc(); showStatus(''); $('step-2').scrollIntoView({behavior:'smooth'});
+  document.querySelector('input[name="pricingMethod"][value="percent"]').checked = true; syncMethodUI(); renderRecipe(); recalc(); showStatus(''); if (isMobileAccordion()) openAccordionStep(2, true); else $('step-2').scrollIntoView({behavior:'smooth'});
 }
 function showStatus(msg, error = false) { $('statusMessage').textContent = msg; $('statusMessage').classList.toggle('error', error); }
 function syncMethodUI() { const multi = pricingMethod() === 'multiplier'; $('percentSettings').hidden = multi; $('multiplierSettings').hidden = !multi; recalc(); }
+
+
+const mobileQuery = window.matchMedia('(max-width: 620px)');
+let openMobileStep = 1;
+
+function isMobileAccordion() { return mobileQuery.matches; }
+
+function accordionHeader(section, step) {
+  return step === 4 ? section.querySelector('.result-intro') : section.querySelector('.section-head');
+}
+
+function setupAccordionButtons() {
+  document.querySelectorAll('.step-section').forEach((section, index) => {
+    const step = index + 1;
+    const header = accordionHeader(section, step);
+    if (!header || header.querySelector('.accordion-toggle')) return;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'accordion-toggle no-print';
+    button.setAttribute('aria-label', `Abrir o cerrar paso ${step}`);
+    button.innerHTML = '<span class="accordion-chevron" aria-hidden="true">⌄</span>';
+    button.addEventListener('click', (event) => {
+      event.stopPropagation();
+      const collapsed = section.classList.contains('accordion-collapsed');
+      if (collapsed) openAccordionStep(step, false);
+      else section.classList.add('accordion-collapsed');
+      updateAccordionButtons();
+    });
+    header.append(button);
+    header.classList.add('accordion-head');
+    header.addEventListener('click', (event) => {
+      if (!isMobileAccordion() || event.target.closest('button, input, select, a, label')) return;
+      if (section.classList.contains('accordion-collapsed')) openAccordionStep(step, false);
+    });
+  });
+}
+
+function updateAccordionButtons() {
+  document.querySelectorAll('.step-section').forEach((section) => {
+    const button = section.querySelector('.accordion-toggle');
+    if (!button) return;
+    const collapsed = section.classList.contains('accordion-collapsed');
+    const chev = button.querySelector('.accordion-chevron');
+    if (chev) chev.textContent = collapsed ? '⌄' : '⌃';
+    button.setAttribute('aria-expanded', String(!collapsed));
+    button.setAttribute('aria-label', collapsed ? 'Abrir sección' : 'Cerrar sección');
+  });
+}
+
+function openAccordionStep(step, scroll = false) {
+  openMobileStep = Math.min(4, Math.max(1, Number(step) || 1));
+  if (!isMobileAccordion()) return;
+  document.querySelectorAll('.step-section').forEach((section, index) => {
+    section.classList.toggle('accordion-collapsed', index + 1 !== openMobileStep);
+  });
+  updateAccordionButtons();
+  if (scroll) {
+    const section = $(`step-${openMobileStep}`);
+    requestAnimationFrame(() => section?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+  }
+}
+
+function syncAccordionMode() {
+  setupAccordionButtons();
+  document.body.classList.toggle('mobile-accordion', isMobileAccordion());
+  if (isMobileAccordion()) {
+    openAccordionStep(openMobileStep, false);
+  } else {
+    document.querySelectorAll('.step-section').forEach(section => section.classList.remove('accordion-collapsed'));
+    updateAccordionButtons();
+  }
+}
 
 function addIngredient() {
   ingredients.push({ id: crypto.randomUUID(), name: '', packageQty: 1, unit: 'kg', price: 0 }); saveIngredients(); renderIngredients(); renderRecipe();
@@ -272,10 +412,33 @@ $('addUnitExtraBtn').addEventListener('click', () => { unitExtras.push({id:crypt
 document.querySelectorAll('input[name="pricingMethod"]').forEach(r => r.addEventListener('change', syncMethodUI));
 document.querySelectorAll('[data-profit]').forEach(b => b.addEventListener('click', () => { $('profitPercent').value = b.dataset.profit; recalc(); }));
 $('saveRecipeBtn').addEventListener('click', saveRecipe);
+$('shareSiteBtn').addEventListener('click', shareSite);
+$('shareResultBtn').addEventListener('click', shareResult);
+$('whatsappBtn').addEventListener('click', shareWhatsApp);
+$('copyLinkBtn').addEventListener('click', () => copyText(shareUrl(), 'Enlace copiado.'));
 $('duplicateRecipeBtn').addEventListener('click', () => { const data = snapshot(); data.id = crypto.randomUUID(); applyRecipe(data, true); });
 $('printBtn').addEventListener('click', () => window.print());
 $('newRecipeBtn').addEventListener('click', newRecipe); $('newRecipeTopBtn').addEventListener('click', newRecipe);
 $('showRecipesBtn').addEventListener('click', () => { $('savedRecipesSection').hidden = false; renderSavedRecipes(); $('savedRecipesSection').scrollIntoView({behavior:'smooth'}); });
 $('closeRecipesBtn').addEventListener('click', () => $('savedRecipesSection').hidden = true);
+
+
+document.querySelector('.hero-cta')?.addEventListener('click', (event) => {
+  if (!isMobileAccordion()) return;
+  event.preventDefault();
+  openAccordionStep(1, true);
+});
+document.querySelectorAll('.progress-nav a').forEach((link, index) => link.addEventListener('click', (event) => {
+  if (!isMobileAccordion()) return;
+  event.preventDefault();
+  openAccordionStep(index + 1, true);
+}));
+// Los botones de la V5 quedan ocultos en móvil. Si alguien los activa desde desktop,
+// simplemente llevan a la sección correspondiente sin alterar los datos.
+document.querySelectorAll('[data-next-step]').forEach(btn => btn.addEventListener('click', () => openAccordionStep(btn.dataset.nextStep, true)));
+document.querySelectorAll('[data-prev-step]').forEach(btn => btn.addEventListener('click', () => openAccordionStep(btn.dataset.prevStep, true)));
+$('mobileNewRecipeBtn')?.addEventListener('click', () => { newRecipe(); openAccordionStep(1, true); });
+mobileQuery.addEventListener?.('change', syncAccordionMode);
+syncAccordionMode();
 
 renderIngredients(); renderRecipe(); renderUnitExtras(); renderSavedRecipes(); syncMethodUI(); recalc();

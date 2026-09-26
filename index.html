@@ -3,23 +3,58 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Calculadora simple de costos, rendimiento y precio de venta para pastelería." />
-    <title>Calculadora de Pastelería</title>
+    <meta name="description" content="DulceCuenta te ayuda a calcular el costo real, el precio de venta y la ganancia de tus recetas de pastelería." />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="theme-color" content="#fff8fb" />
+    <title>DulceCuenta | Calculadora de Pastelería</title>
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
     <main class="app-shell">
       <header class="hero no-print">
-        <div class="hero-copy">
-          <p class="eyebrow">Costos simples y claros</p>
-          <h1><span aria-hidden="true">🍰</span> Calculadora de Pastelería</h1>
-          <p>Cargá lo que comprás, cuánto usás y cómo presentás cada producto. La calculadora te muestra el costo real, el precio sugerido y cuánto te queda de ganancia.</p>
+        <div class="brand-bar">
+          <a class="brand" href="#" aria-label="DulceCuenta, inicio">
+            <img src="/logo-mark.png" alt="" class="brand-mark" />
+            <span class="brand-copy"><strong>DulceCuenta</strong><small>Costos de pastelería, sin vueltas</small></span>
+          </a>
+          <div class="hero-actions">
+            <button id="shareSiteBtn" class="secondary" type="button">↗ Compartir</button>
+            <button id="newRecipeTopBtn" class="secondary" type="button">＋ Nueva receta</button>
+            <button id="showRecipesBtn" class="secondary" type="button">📒 Mis recetas <span id="savedCount" class="button-count">0</span></button>
+          </div>
         </div>
-        <div class="hero-actions">
-          <button id="newRecipeTopBtn" class="secondary" type="button">＋ Nueva receta</button>
-          <button id="showRecipesBtn" class="secondary" type="button">📒 Mis recetas <span id="savedCount" class="button-count">0</span></button>
+
+        <div class="hero-main">
+          <div class="hero-copy">
+            <p class="eyebrow">Calculá antes de vender</p>
+            <h1>Sabé cuánto te cuesta.<br /><span>Vendé con números claros.</span></h1>
+            <p class="hero-lead">Cargá ingredientes, rendimiento y presentación. DulceCuenta calcula el <strong>costo real</strong>, el <strong>precio sugerido</strong> y la <strong>ganancia por unidad</strong>.</p>
+            <div class="hero-benefits" aria-label="Qué calcula DulceCuenta">
+              <span>✓ Costo real</span><span>✓ Precio sugerido</span><span>✓ Ganancia</span>
+            </div>
+            <a class="primary hero-cta" href="#step-1">Empezar cálculo ↓</a>
+          </div>
+          <aside class="hero-guide" aria-label="Cómo funciona">
+            <p>EN 4 PASOS</p>
+            <ol>
+              <li><span>1</span><div><strong>Cargás</strong><small>qué comprás y cuánto pagás</small></div></li>
+              <li><span>2</span><div><strong>Armás</strong><small>la receta y su rendimiento</small></div></li>
+              <li><span>3</span><div><strong>Sumás</strong><small>presentación y otros costos</small></div></li>
+              <li><span>4</span><div><strong>Decidís</strong><small>a cuánto vender y cuánto ganás</small></div></li>
+            </ol>
+          </aside>
         </div>
       </header>
+
+      <section class="live-summary no-print" aria-live="polite">
+        <div class="live-summary-label">
+          <span>Resumen en vivo</span>
+          <small id="liveContext">Actualizá cualquier dato y los números cambian al instante.</small>
+        </div>
+        <div class="live-metric"><span>Costo actual</span><strong id="liveCost">$ 0</strong></div>
+        <div class="live-metric live-price"><span>Precio sugerido</span><strong id="livePrice">$ 0</strong></div>
+        <div class="live-metric"><span>Ganancia</span><strong id="liveProfit">$ 0</strong></div>
+      </section>
 
       <nav class="progress-nav no-print" aria-label="Pasos de la calculadora">
         <a href="#step-1"><span>1</span><strong>Ingredientes</strong><small>Qué comprás</small></a>
@@ -35,6 +70,7 @@
             <div>
               <h2>Cargá tus ingredientes</h2>
               <p>Ingresá cómo los comprás. Nosotros calculamos automáticamente cuánto cuesta cada gramo, ml o unidad.</p>
+              <p id="step1Compact" class="compact-summary"></p>
             </div>
           </div>
           <button id="addIngredientBtn" class="secondary" type="button">＋ Agregar ingrediente</button>
@@ -48,6 +84,10 @@
         <div id="ingredientsList" class="editable-list"></div>
         <p id="ingredientsEmpty" class="empty-state" hidden>No hay ingredientes cargados.</p>
         <button id="addIngredientBottomBtn" class="secondary full-width add-bottom" type="button">＋ Agregar otro ingrediente</button>
+        <div class="wizard-footer mobile-only">
+          <span class="wizard-hint">Cuando termines de cargar tus compras</span>
+          <button class="primary wizard-next" type="button" data-next-step="2">Continuar a receta →</button>
+        </div>
       </section>
 
       <section id="step-2" class="step-section card no-print">
@@ -57,6 +97,7 @@
             <div>
               <h2>Armá la receta</h2>
               <p>Elegí cuánto usás de cada ingrediente y cuántas unidades finales produce la preparación.</p>
+              <p id="step2Compact" class="compact-summary"></p>
             </div>
           </div>
         </div>
@@ -85,6 +126,10 @@
           <strong id="batchIngredientPreview">$ 0</strong>
           <small id="unitIngredientPreview">$ 0 por unidad</small>
         </div>
+        <div class="wizard-footer mobile-only wizard-footer-split">
+          <button class="secondary wizard-prev" type="button" data-prev-step="1">← Ingredientes</button>
+          <button class="primary wizard-next" type="button" data-next-step="3">Continuar a costos →</button>
+        </div>
       </section>
 
       <section id="step-3" class="step-section card no-print">
@@ -94,6 +139,7 @@
             <div>
               <h2>Completá presentación y forma de calcular el precio</h2>
               <p>Estos valores se cargan <strong>por cada unidad que vendés</strong>. Si algo no aplica, dejalo en $0.</p>
+              <p id="step3Compact" class="compact-summary"></p>
             </div>
           </div>
         </div>
@@ -142,12 +188,16 @@
             <p class="method-example" id="multiplierExample">Costo de ingredientes × 3 ÷ unidades = precio por unidad. Los extras se descuentan después para mostrar la ganancia real.</p>
           </div>
         </div>
+        <div class="wizard-footer mobile-only wizard-footer-split">
+          <button class="secondary wizard-prev" type="button" data-prev-step="2">← Receta</button>
+          <button class="primary wizard-next" type="button" data-next-step="4">Ver resultado →</button>
+        </div>
       </section>
 
       <section id="step-4" class="step-section result-section">
         <div class="result-intro no-print">
           <span class="step-badge">4</span>
-          <div><h2>Resultado final</h2><p>Acá ves cuánto cuesta realmente cada unidad, a cuánto venderla y cuánto te queda.</p></div>
+          <div><h2>Resultado final</h2><p>Acá ves cuánto cuesta realmente cada unidad, a cuánto venderla y cuánto te queda.</p><p id="step4Compact" class="compact-summary"></p></div>
         </div>
 
         <div class="print-title"><h2 id="printRecipeName">Receta</h2><p>Resumen de costos y precio sugerido</p></div>
@@ -183,12 +233,19 @@
 
             <div class="result-actions no-print">
               <button id="saveRecipeBtn" class="primary" type="button">💾 Guardar receta</button>
+              <button id="shareResultBtn" class="result-secondary" type="button">↗ Compartir resultado</button>
+              <button id="whatsappBtn" class="result-secondary" type="button">💬 WhatsApp</button>
+              <button id="copyLinkBtn" class="result-secondary" type="button">🔗 Copiar enlace</button>
               <button id="duplicateRecipeBtn" class="result-secondary" type="button">⧉ Duplicar</button>
               <button id="printBtn" class="result-secondary" type="button">🖨️ Imprimir / PDF</button>
               <button id="newRecipeBtn" class="result-secondary" type="button">＋ Nueva receta</button>
             </div>
             <p id="statusMessage" class="status no-print" aria-live="polite"></p>
           </article>
+        </div>
+        <div class="wizard-footer mobile-only result-wizard-footer">
+          <button class="secondary wizard-prev" type="button" data-prev-step="3">← Volver a costos</button>
+          <button id="mobileNewRecipeBtn" class="secondary" type="button">＋ Nueva receta</button>
         </div>
       </section>
 

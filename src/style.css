@@ -2,3 +2,115 @@
 @media(max-width:860px){.hero{align-items:flex-start;flex-direction:column}.result-layout{grid-template-columns:1fr}.presentation-grid,.production-grid{grid-template-columns:repeat(2,1fr)}.saved-grid{grid-template-columns:1fr}.progress-nav small{display:none}.progress-nav a{grid-template-columns:34px 1fr}.desktop-row-head{display:none}.mobile-field-label>span:first-child{display:block}.ingredient-row,.recipe-row{grid-template-columns:1.5fr 1fr 120px;position:relative;padding-right:50px}.ingredient-row .mobile-field-label:nth-child(4),.ingredient-row .mobile-field-label:nth-child(5),.recipe-row .mobile-field-label:nth-child(4){grid-column:auto}.editable-row .icon-btn{position:absolute;right:9px;top:9px}.add-bottom{display:block}}
 @media(max-width:620px){.app-shell{padding:18px 12px 42px}.hero-actions{width:100%}.hero-actions button{flex:1}.progress-nav{grid-template-columns:repeat(2,1fr)}.step-section,.saved-section{padding:16px;border-radius:18px}.section-head{align-items:flex-start;flex-direction:column}.section-head>button{width:100%}.ingredient-row,.recipe-row{grid-template-columns:1fr;padding-right:46px}.recipe-meta-grid{grid-template-columns:1fr}.presentation-grid,.production-grid{grid-template-columns:1fr}.custom-cost-row{grid-template-columns:1fr 130px 36px}.method-tabs{grid-template-columns:1fr}.method-settings>label{align-items:flex-start;flex-direction:column}.suffix-input{width:100%;max-width:none}.hero-numbers{grid-template-columns:1fr}.saved-summary{grid-template-columns:1fr}.saved-actions{flex-direction:column}.result-actions{flex-direction:column}.result-actions button{width:100%}.batch-preview{grid-template-columns:1fr}.batch-preview small{grid-column:auto}.price-result-card{padding:20px 16px}}
 @media print{body{background:white}.app-shell{max-width:none;padding:0}.no-print{display:none!important}.print-title{display:block;margin-bottom:18px}.print-title h2{margin:0;font-size:24px}.print-title p{margin:4px 0;color:#555}.result-section{margin:0}.result-layout{grid-template-columns:1fr 1fr;gap:12px}.card,.price-result-card{border:1px solid #bbb;break-inside:avoid}.price-result-card{background:white!important;color:#111!important}.price-result-card *{color:#111!important}.hero-numbers>div{background:#f4f4f4}.result-kicker{color:#555!important}}
+
+/* DulceCuenta V4: marca, portada y compartir */
+.brand-bar{display:flex;align-items:center;justify-content:space-between;gap:20px;width:100%;margin-bottom:28px}
+.brand{display:inline-flex;align-items:center;gap:11px;color:var(--ink);text-decoration:none;min-width:0}
+.brand-mark{width:58px;height:58px;object-fit:contain;flex:0 0 auto}
+.brand-copy{display:grid;line-height:1.05}.brand-copy strong{font-size:1.25rem;letter-spacing:-.025em}.brand-copy small{margin-top:5px;color:var(--muted);font-size:.76rem;font-weight:700}
+.hero{display:block;padding-top:4px}.hero-main{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(285px,.72fr);gap:42px;align-items:center}.hero-copy{max-width:760px}.hero-copy h1{font-size:clamp(2.65rem,6vw,5.35rem);line-height:.95;letter-spacing:-.058em;margin:8px 0 18px}.hero-copy h1 span{color:var(--accent-dark)}.hero-lead{max-width:720px;font-size:1.06rem;line-height:1.62;color:var(--muted);margin:0}.hero-benefits{display:flex;flex-wrap:wrap;gap:9px;margin:19px 0}.hero-benefits span{padding:8px 11px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--ink);font-size:.84rem;font-weight:800}.hero-cta{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;margin-top:3px;padding:12px 18px}.hero-guide{padding:21px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.82)}.hero-guide>p{margin:0 0 13px;color:var(--accent-dark);font-size:.72rem;font-weight:900;letter-spacing:.14em}.hero-guide ol{list-style:none;margin:0;padding:0;display:grid;gap:7px}.hero-guide li{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid #f1e3e9}.hero-guide li:last-child{border-bottom:0}.hero-guide li>span{width:31px;height:31px;display:grid;place-items:center;border-radius:10px;background:var(--accent-soft);color:var(--accent-dark);font-weight:900;flex:0 0 auto}.hero-guide li div{display:grid;gap:2px}.hero-guide li strong{font-size:.9rem}.hero-guide li small{color:var(--muted);line-height:1.3}.hero-actions{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:8px}
+@media(max-width:860px){.brand-bar{align-items:flex-start}.hero-main{grid-template-columns:1fr;gap:22px}.hero-guide{max-width:620px}.hero-copy h1{font-size:clamp(2.55rem,10vw,4.5rem)}}
+@media(max-width:620px){.brand-bar{flex-direction:column;margin-bottom:23px}.brand-mark{width:52px;height:52px}.brand-copy strong{font-size:1.18rem}.hero-actions{width:100%;display:grid;grid-template-columns:1fr 1fr}.hero-actions button:first-child{grid-column:1/-1}.hero-copy h1{font-size:clamp(2.55rem,14vw,3.7rem)}.hero-lead{font-size:1rem}.hero-guide{padding:16px}.hero-cta{width:100%}}
+\n\n/* DulceCuenta V5: asistente móvil por pasos */\n.mobile-only{display:none}\n.wizard-footer{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);display:none;gap:10px;align-items:center}\n.wizard-footer .wizard-hint{font-size:.78rem;color:var(--muted);line-height:1.35}\n.wizard-footer-split{grid-template-columns:1fr 1.35fr}\n.result-wizard-footer{grid-template-columns:1fr 1fr}\n@media(max-width:620px){\n  body.mobile-wizard .mobile-only{display:grid}\n  body.mobile-wizard.hero-collapsed .hero-main{display:none}\n  body.mobile-wizard.hero-collapsed .hero{padding:2px 0 8px}\n  body.mobile-wizard.hero-collapsed .brand-bar{margin-bottom:4px;align-items:center;flex-direction:row}\n  body.mobile-wizard.hero-collapsed .brand-mark{width:42px;height:42px}\n  body.mobile-wizard.hero-collapsed .brand-copy strong{font-size:1.05rem}\n  body.mobile-wizard.hero-collapsed .brand-copy small{display:none}\n  body.mobile-wizard.hero-collapsed .hero-actions{display:none}\n  body.mobile-wizard .progress-nav{position:sticky;top:0;z-index:20;grid-template-columns:repeat(4,1fr);gap:6px;margin:0 -2px 12px;padding:8px 2px;background:rgba(255,249,251,.96);backdrop-filter:blur(10px)}\n  body.mobile-wizard .progress-nav a{display:flex;flex-direction:column;justify-content:center;gap:5px;min-width:0;padding:7px 3px;border-radius:12px;text-align:center}\n  body.mobile-wizard .progress-nav a>span{width:30px;height:30px;border-radius:10px;margin:auto;flex:0 0 auto}\n  body.mobile-wizard .progress-nav strong{font-size:.68rem;line-height:1.05}\n  body.mobile-wizard .progress-nav small{display:none}\n  body.mobile-wizard .progress-nav a.current{border-color:#c85c87;background:var(--accent-soft)}\n  body.mobile-wizard .progress-nav a.current>span{background:var(--accent);color:#fff}\n  body.mobile-wizard .progress-nav a.completed>span{background:#e9f6f0;color:var(--success)}\n  body.mobile-wizard .step-section{display:none;margin-bottom:0}\n  body.mobile-wizard .step-section.wizard-active{display:block;animation:wizardIn .18s ease-out}\n  body.mobile-wizard #step-4.wizard-active{display:block}\n  body.mobile-wizard .section-head{margin-bottom:14px}\n  body.mobile-wizard .section-title-wrap{gap:10px}\n  body.mobile-wizard .step-badge{width:36px;height:36px}\n  body.mobile-wizard .section-head h2,body.mobile-wizard .result-intro h2{font-size:1.22rem}\n  body.mobile-wizard .helper-banner{font-size:.9rem}\n  body.mobile-wizard .wizard-footer{display:grid}\n  body.mobile-wizard .wizard-footer:not(.wizard-footer-split):not(.result-wizard-footer){grid-template-columns:1fr}\n  body.mobile-wizard .wizard-footer:not(.wizard-footer-split) .wizard-hint{margin-bottom:-2px}\n  body.mobile-wizard .wizard-footer button{min-height:46px}\n  body.mobile-wizard .result-intro{margin-top:0}\n  body.mobile-wizard .result-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}\n  body.mobile-wizard .result-actions button{width:auto;min-height:44px;padding:10px 8px;font-size:.86rem}\n  body.mobile-wizard .result-actions #saveRecipeBtn{grid-column:1/-1}\n  body.mobile-wizard .result-actions #shareResultBtn{grid-column:1/-1}\n  body.mobile-wizard .price-result-card{padding:18px 14px}\n  body.mobile-wizard .hero-numbers{grid-template-columns:repeat(3,1fr);gap:6px}\n  body.mobile-wizard .hero-numbers>div{padding:9px 7px}\n  body.mobile-wizard .hero-numbers span{font-size:.67rem}\n  body.mobile-wizard .hero-numbers strong{font-size:.92rem}\n  body.mobile-wizard .profit-details>div{padding:8px 0}\n}\n@keyframes wizardIn{from{opacity:.35;transform:translateY(4px)}to{opacity:1;transform:none}}\n@media(prefers-reduced-motion:reduce){body.mobile-wizard .step-section.wizard-active{animation:none}}\n
+/* DulceCuenta V6: resumen en vivo + secciones plegables */
+.live-summary{display:grid;grid-template-columns:minmax(250px,1.2fr) repeat(3,minmax(140px,.7fr));gap:10px;align-items:stretch;margin:18px 0 14px;padding:10px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.9)}
+.live-summary-label{display:flex;flex-direction:column;justify-content:center;padding:8px 10px;min-width:0}
+.live-summary-label>span{font-size:.72rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-dark)}
+.live-summary-label small{margin-top:4px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.live-metric{display:flex;flex-direction:column;justify-content:center;padding:10px 12px;border-radius:13px;background:#fff7fa;border:1px solid #f1dde5;min-width:0}
+.live-metric span{font-size:.72rem;color:var(--muted);font-weight:700}
+.live-metric strong{margin-top:3px;font-size:1.08rem;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.live-metric.live-price{background:var(--accent-soft)}
+.live-metric.live-price strong{color:var(--accent-dark)}
+.negative-live{color:#b42318!important}
+.compact-summary{display:none!important}
+.accordion-toggle{display:none}
+
+@media(max-width:620px){
+  /* anulamos el modo wizard anterior: la V6 muestra datos en vivo y usa acordeones */
+  body.mobile-accordion .progress-nav{display:none!important}
+  body.mobile-accordion .wizard-footer{display:none!important}
+  body.mobile-accordion .step-section{display:block!important;animation:none!important;margin-bottom:10px;scroll-margin-top:112px}
+  body.mobile-accordion .hero-main{display:grid!important}
+  body.mobile-accordion .hero-actions{display:grid!important}
+
+  .live-summary{position:sticky;top:0;z-index:30;grid-template-columns:repeat(3,1fr);gap:5px;margin:8px 0 12px;padding:6px;border-radius:14px;background:rgba(255,249,251,.96);backdrop-filter:blur(12px);box-shadow:0 6px 18px rgba(80,28,53,.08)}
+  .live-summary-label{grid-column:1/-1;display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:8px;padding:2px 4px 5px}
+  .live-summary-label>span{font-size:.64rem}
+  .live-summary-label small{margin:0;font-size:.68rem;text-align:right;max-width:62%}
+  .live-metric{padding:7px 6px;border-radius:10px;text-align:center}
+  .live-metric span{font-size:.61rem;line-height:1.1}
+  .live-metric strong{font-size:.84rem;margin-top:4px}
+
+  body.mobile-accordion .step-section{padding:13px 14px;border-radius:16px}
+  body.mobile-accordion .section-head,body.mobile-accordion .result-intro{position:relative;display:flex;align-items:flex-start;gap:8px;margin:0;padding-right:62px;cursor:pointer}
+  body.mobile-accordion .section-title-wrap{width:100%;gap:9px}
+  body.mobile-accordion .section-head h2,body.mobile-accordion .result-intro h2{font-size:1.05rem;line-height:1.18;margin-top:2px}
+  body.mobile-accordion .section-head p,body.mobile-accordion .result-intro p{font-size:.82rem;line-height:1.35;margin-top:4px}
+  body.mobile-accordion .step-badge{width:32px;height:32px;border-radius:10px;font-size:.88rem}
+  body.mobile-accordion .accordion-toggle{display:inline-flex;position:absolute;right:0;top:0;align-items:center;justify-content:center;gap:3px;min-width:56px;height:34px;padding:0 7px;border:1px solid var(--line);border-radius:10px;background:#fff7fa;color:var(--accent-dark);font:inherit;font-size:.67rem;font-weight:900;cursor:pointer}
+  body.mobile-accordion .accordion-chevron{font-size:.9rem;line-height:1}
+
+  body.mobile-accordion .accordion-collapsed{background:#fff;border-color:var(--line)}
+  body.mobile-accordion .accordion-collapsed > :not(.section-head):not(.result-intro){display:none!important}
+  body.mobile-accordion .accordion-collapsed .section-head > button:not(.accordion-toggle){display:none!important}
+  body.mobile-accordion .accordion-collapsed .section-head p:not(.compact-summary),body.mobile-accordion .accordion-collapsed .result-intro p:not(.compact-summary){display:none!important}
+  body.mobile-accordion .accordion-collapsed .compact-summary{display:block!important;color:var(--muted);font-size:.76rem;font-weight:700;margin:5px 0 0}
+
+  /* Al estar abierta, evitamos botones apilados en el encabezado */
+  body.mobile-accordion .section-head>button:not(.accordion-toggle){width:100%;margin-top:8px}
+  body.mobile-accordion .section-head{flex-wrap:wrap}
+
+  /* Las tarjetas internas siguen siendo cómodas, pero un poco más compactas */
+  body.mobile-accordion .ingredient-row,body.mobile-accordion .recipe-row{padding-top:10px;padding-bottom:10px}
+  body.mobile-accordion .mini-cost{padding:11px}
+  body.mobile-accordion .price-result-card{margin-top:4px}
+  body.mobile-accordion .result-actions{grid-template-columns:1fr 1fr!important}
+  body.mobile-accordion .result-actions #saveRecipeBtn{grid-column:1/-1}
+  body.mobile-accordion .result-actions #shareResultBtn{grid-column:1/-1}
+}
+
+
+/* DulceCuenta V6.1: controles móviles más limpios */
+@media(max-width:620px){
+  body.mobile-accordion .section-head,
+  body.mobile-accordion .result-intro{
+    padding-right:42px;
+    min-height:36px;
+  }
+  body.mobile-accordion .accordion-toggle{
+    display:grid!important;
+    place-items:center;
+    position:absolute!important;
+    right:0!important;
+    top:0!important;
+    width:34px!important;
+    min-width:34px!important;
+    max-width:34px!important;
+    height:34px!important;
+    padding:0!important;
+    margin:0!important;
+    border:1px solid var(--line)!important;
+    border-radius:10px!important;
+    background:#fff7fa!important;
+    color:var(--accent-dark)!important;
+    line-height:1!important;
+    flex:0 0 34px!important;
+  }
+  body.mobile-accordion .accordion-chevron{
+    display:block;
+    font-size:1.05rem!important;
+    line-height:1!important;
+    transform:translateY(-1px);
+  }
+  body.mobile-accordion #step-1 .section-head > #addIngredientBtn{
+    display:none!important;
+  }
+  body.mobile-accordion #step-1 .add-bottom{
+    display:block!important;
+  }
+  body.mobile-accordion .section-head h2,
+  body.mobile-accordion .result-intro h2{
+    padding-right:2px;
+  }
+}
