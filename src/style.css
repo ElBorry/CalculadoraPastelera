@@ -114,3 +114,9 @@
     padding-right:2px;
   }
 }
+
+
+/* DulceCuenta V6.3: feedback de usuarios */
+.feedback-card{margin-top:16px;padding:18px 20px;border:1px solid var(--line);border-radius:18px;background:#fff;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px 18px;align-items:center}
+.feedback-copy{min-width:0}.feedback-eyebrow{margin:0 0 4px;color:var(--accent-dark);font-size:.68rem;font-weight:900;letter-spacing:.12em}.feedback-copy h3{margin:0;font-size:1.1rem}.feedback-copy>p:last-child{margin:4px 0 0;color:var(--muted);font-size:.9rem}.feedback-actions{display:flex;gap:8px}.feedback-btn,.feedback-reason{border:1px solid var(--line);background:#fff7fa;color:var(--accent-dark);border-radius:12px;font-weight:850}.feedback-btn{min-width:88px;padding:10px 14px}.feedback-btn.selected{background:var(--accent);border-color:var(--accent);color:#fff}.feedback-reasons{grid-column:1/-1;padding-top:12px;border-top:1px solid var(--line)}.feedback-reasons>p{margin:0 0 9px;font-weight:800}.feedback-reason-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.feedback-reason{padding:9px 10px;font-size:.84rem}.feedback-reason.selected{background:var(--accent-soft);border-color:#d98aaa}.feedback-thanks{grid-column:1/-1;margin:0;color:var(--success);font-weight:800}
+@media(max-width:620px){.feedback-card{grid-template-columns:1fr;padding:14px}.feedback-actions{display:grid;grid-template-columns:1fr 1fr}.feedback-btn{width:100%;min-height:44px}.feedback-reasons{grid-column:1}.feedback-reason-grid{grid-template-columns:1fr 1fr}.feedback-thanks{grid-column:1}}

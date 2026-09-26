@@ -478,6 +478,39 @@ $('newRecipeBtn').addEventListener('click', newRecipe); $('newRecipeTopBtn').add
 $('showRecipesBtn').addEventListener('click', () => { $('savedRecipesSection').hidden = false; renderSavedRecipes(); $('savedRecipesSection').scrollIntoView({behavior:'smooth'}); });
 $('closeRecipesBtn').addEventListener('click', () => $('savedRecipesSection').hidden = true);
 
+function submitFeedback(helpful) {
+  const yes = $('feedbackYesBtn');
+  const no = $('feedbackNoBtn');
+  const reasons = $('feedbackReasons');
+  const thanks = $('feedbackThanks');
+
+  yes.classList.toggle('selected', helpful === true);
+  no.classList.toggle('selected', helpful === false);
+  yes.setAttribute('aria-pressed', String(helpful === true));
+  no.setAttribute('aria-pressed', String(helpful === false));
+
+  trackEvent('feedback_submitted', { helpful: helpful ? 'yes' : 'no' });
+
+  if (helpful) {
+    reasons.hidden = true;
+    thanks.hidden = false;
+  } else {
+    reasons.hidden = false;
+    thanks.hidden = true;
+  }
+}
+
+$('feedbackYesBtn')?.addEventListener('click', () => submitFeedback(true));
+$('feedbackNoBtn')?.addEventListener('click', () => submitFeedback(false));
+document.querySelectorAll('[data-feedback-reason]').forEach(button => {
+  button.addEventListener('click', () => {
+    document.querySelectorAll('[data-feedback-reason]').forEach(b => b.classList.remove('selected'));
+    button.classList.add('selected');
+    trackEvent('feedback_reason', { reason: button.dataset.feedbackReason });
+    $('feedbackThanks').hidden = false;
+  });
+});
+
 
 document.querySelector('.hero-cta')?.addEventListener('click', (event) => {
   trackEvent('start_calculation');

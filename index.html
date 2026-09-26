@@ -1,22 +1,9 @@
 <!doctype html>
 <html lang="es">
   <head>
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1Q94L9X2CT"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-1Q94L9X2CT');
-    </script>
-
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="DulceCuenta te ayuda a calcular el costo real, el precio de venta y la ganancia de tus recetas de pastelería."
-    />
+    <meta name="description" content="DulceCuenta te ayuda a calcular el costo real, el precio de venta y la ganancia de tus recetas de pastelería." />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="theme-color" content="#fff8fb" />
     <title>DulceCuenta | Calculadora de Pastelería</title>
@@ -256,6 +243,28 @@
             <p id="statusMessage" class="status no-print" aria-live="polite"></p>
           </article>
         </div>
+
+        <section class="feedback-card no-print" aria-labelledby="feedbackTitle">
+          <div class="feedback-copy">
+            <p class="feedback-eyebrow">TU OPINIÓN NOS AYUDA</p>
+            <h3 id="feedbackTitle">¿Te sirvió DulceCuenta?</h3>
+            <p>Con un toque nos ayudás a mejorar la calculadora.</p>
+          </div>
+          <div class="feedback-actions" role="group" aria-label="¿Te sirvió DulceCuenta?">
+            <button id="feedbackYesBtn" class="feedback-btn" type="button">👍 Sí</button>
+            <button id="feedbackNoBtn" class="feedback-btn" type="button">👎 No</button>
+          </div>
+          <div id="feedbackReasons" class="feedback-reasons" hidden>
+            <p>¿Qué te faltó?</p>
+            <div class="feedback-reason-grid">
+              <button class="feedback-reason" type="button" data-feedback-reason="costs_missing">Faltan costos</button>
+              <button class="feedback-reason" type="button" data-feedback-reason="hard_to_use">Me costó usarla</button>
+              <button class="feedback-reason" type="button" data-feedback-reason="result_unclear">No entendí el resultado</button>
+              <button class="feedback-reason" type="button" data-feedback-reason="other">Otra cosa</button>
+            </div>
+          </div>
+          <p id="feedbackThanks" class="feedback-thanks" hidden>¡Gracias! Tu respuesta quedó registrada.</p>
+        </section>
         <div class="wizard-footer mobile-only result-wizard-footer">
           <button class="secondary wizard-prev" type="button" data-prev-step="3">← Volver a costos</button>
           <button id="mobileNewRecipeBtn" class="secondary" type="button">＋ Nueva receta</button>
