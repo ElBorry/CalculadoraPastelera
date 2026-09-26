@@ -523,11 +523,32 @@ document.querySelectorAll('.progress-nav a').forEach((link, index) => link.addEv
   event.preventDefault();
   openAccordionStep(index + 1, true);
 }));
-// Los botones de la V5 quedan ocultos en móvil. Si alguien los activa desde desktop,
-// simplemente llevan a la sección correspondiente sin alterar los datos.
-document.querySelectorAll('[data-next-step]').forEach(btn => btn.addEventListener('click', () => openAccordionStep(btn.dataset.nextStep, true)));
-document.querySelectorAll('[data-prev-step]').forEach(btn => btn.addEventListener('click', () => openAccordionStep(btn.dataset.prevStep, true)));
-$('mobileNewRecipeBtn')?.addEventListener('click', () => { newRecipe(); openAccordionStep(1, true); });
+function navigateToStep(step) {
+  const targetStep = Math.min(4, Math.max(1, Number(step) || 1));
+
+  if (isMobileAccordion()) {
+    openAccordionStep(targetStep, true);
+    return;
+  }
+
+  const section = $(`step-${targetStep}`);
+  section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Navegación entre pasos: en mobile abre el acordeón correspondiente;
+// en desktop desplaza suavemente hasta la sección elegida.
+document.querySelectorAll('[data-next-step]').forEach(btn => {
+  btn.addEventListener('click', () => navigateToStep(btn.dataset.nextStep));
+});
+
+document.querySelectorAll('[data-prev-step]').forEach(btn => {
+  btn.addEventListener('click', () => navigateToStep(btn.dataset.prevStep));
+});
+
+$('mobileNewRecipeBtn')?.addEventListener('click', () => {
+  newRecipe();
+  navigateToStep(1);
+});
 mobileQuery.addEventListener?.('change', syncAccordionMode);
 syncAccordionMode();
 setupResultViewTracking();
