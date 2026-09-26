@@ -25,8 +25,15 @@ let ingredients = load(STORAGE_INGREDIENTS, defaultIngredients);
 let recipeItems = buildDefaultRecipeItems();
 let unitExtras = [];
 let currentRecipeId = null;
+let resultViewTracked = false;
 
 const $ = (id) => document.getElementById(id);
+
+function trackEvent(eventName, params = {}) {
+  if (typeof window.gtag === 'function') {
+    window.gtag('event', eventName, params);
+  }
+}
 
 function clone(value) { return JSON.parse(JSON.stringify(value)); }
 function load(key, fallback) {
@@ -286,9 +293,15 @@ function saveRecipe() {
   const recipes = load(STORAGE_RECIPES, []); const data = snapshot(); const idx = recipes.findIndex(x => x.id === data.id);
   if (idx >= 0) recipes[idx] = data; else recipes.unshift(data);
   currentRecipeId = data.id; saveRecipes(recipes.slice(0, 100)); renderSavedRecipes(); showStatus(idx >= 0 ? 'Cambios guardados.' : 'Receta guardada en este navegador.');
+  trackEvent('recipe_saved', {
+    servings: data.servings,
+    pricing_method: data.pricing.method,
+    is_update: idx >= 0,
+  });
 }
 
 function applyRecipe(recipe, duplicate = false) {
+  resultViewTracked = false;
   currentRecipeId = duplicate ? null : recipe.id;
   $('recipeName').value = duplicate ? `${recipe.name} - copia` : recipe.name;
   recipeItems = (recipe.recipeItems || []).filter(r => ingredients.some(i => i.id === r.ingredientId)).map(r => ({ ...r, id: crypto.randomUUID() }));
@@ -319,6 +332,7 @@ function renderSavedRecipes() {
 }
 
 function newRecipe() {
+  resultViewTracked = false;
   currentRecipeId = null; $('recipeName').value = ''; recipeItems = []; $('servings').value = 1;
   ['boxCost','ribbonCost','cardCost','trayCost','bagCost','drinkCost','labor','energy','otherBatch'].forEach(id => $(id).value = 0);
   unitExtras = []; renderUnitExtras(); $('profitPercent').value = 50; $('multiplier').value = 3;
@@ -399,8 +413,32 @@ function syncAccordionMode() {
   }
 }
 
+function setupResultViewTracking() {
+  const resultSection = $('step-4');
+  if (!resultSection || typeof IntersectionObserver === 'undefined') return;
+
+  const observer = new IntersectionObserver((entries) => {
+    const visible = entries.some(entry => entry.isIntersecting && entry.intersectionRatio >= 0.35);
+    if (!visible || resultViewTracked) return;
+
+    const r = calculate();
+    if (!recipeItems.length || r.realUnitCost <= 0) return;
+
+    trackEvent('result_viewed', {
+      servings: r.qty,
+      pricing_method: r.method,
+      real_unit_cost: Number(r.realUnitCost.toFixed(2)),
+      suggested_price: Number(r.pricePerUnit.toFixed(2)),
+    });
+    resultViewTracked = true;
+  }, { threshold: [0.35] });
+
+  observer.observe(resultSection);
+}
+
 function addIngredient() {
   ingredients.push({ id: crypto.randomUUID(), name: '', packageQty: 1, unit: 'kg', price: 0 }); saveIngredients(); renderIngredients(); renderRecipe();
+  trackEvent('ingredient_added');
   const rows = $('ingredientsList').querySelectorAll('.ingredient-row'); rows[rows.length - 1]?.querySelector('input[type="text"]')?.focus();
 }
 
@@ -409,21 +447,40 @@ $('addRecipeItemBtn').addEventListener('click', () => { if (!ingredients.length)
 $('addUnitExtraBtn').addEventListener('click', () => { unitExtras.push({id:crypto.randomUUID(), name:'', cost:0}); renderUnitExtras(); });
 
 ['servings','boxCost','ribbonCost','cardCost','trayCost','bagCost','drinkCost','labor','energy','otherBatch','profitPercent','multiplier','recipeName'].forEach(id => $(id).addEventListener('input', recalc));
-document.querySelectorAll('input[name="pricingMethod"]').forEach(r => r.addEventListener('change', syncMethodUI));
+document.querySelectorAll('input[name="pricingMethod"]').forEach(r => r.addEventListener('change', () => {
+  syncMethodUI();
+  trackEvent(r.value === 'multiplier' ? 'pricing_method_multiplier' : 'pricing_method_percentage');
+}));
 document.querySelectorAll('[data-profit]').forEach(b => b.addEventListener('click', () => { $('profitPercent').value = b.dataset.profit; recalc(); }));
 $('saveRecipeBtn').addEventListener('click', saveRecipe);
-$('shareSiteBtn').addEventListener('click', shareSite);
-$('shareResultBtn').addEventListener('click', shareResult);
-$('whatsappBtn').addEventListener('click', shareWhatsApp);
-$('copyLinkBtn').addEventListener('click', () => copyText(shareUrl(), 'Enlace copiado.'));
+$('shareSiteBtn').addEventListener('click', () => {
+  trackEvent('share_site');
+  shareSite();
+});
+$('shareResultBtn').addEventListener('click', () => {
+  trackEvent('share_result');
+  shareResult();
+});
+$('whatsappBtn').addEventListener('click', () => {
+  trackEvent('whatsapp_click');
+  shareWhatsApp();
+});
+$('copyLinkBtn').addEventListener('click', () => {
+  trackEvent('copy_link');
+  copyText(shareUrl(), 'Enlace copiado.');
+});
 $('duplicateRecipeBtn').addEventListener('click', () => { const data = snapshot(); data.id = crypto.randomUUID(); applyRecipe(data, true); });
-$('printBtn').addEventListener('click', () => window.print());
+$('printBtn').addEventListener('click', () => {
+  trackEvent('print_pdf');
+  window.print();
+});
 $('newRecipeBtn').addEventListener('click', newRecipe); $('newRecipeTopBtn').addEventListener('click', newRecipe);
 $('showRecipesBtn').addEventListener('click', () => { $('savedRecipesSection').hidden = false; renderSavedRecipes(); $('savedRecipesSection').scrollIntoView({behavior:'smooth'}); });
 $('closeRecipesBtn').addEventListener('click', () => $('savedRecipesSection').hidden = true);
 
 
 document.querySelector('.hero-cta')?.addEventListener('click', (event) => {
+  trackEvent('start_calculation');
   if (!isMobileAccordion()) return;
   event.preventDefault();
   openAccordionStep(1, true);
@@ -440,5 +497,6 @@ document.querySelectorAll('[data-prev-step]').forEach(btn => btn.addEventListene
 $('mobileNewRecipeBtn')?.addEventListener('click', () => { newRecipe(); openAccordionStep(1, true); });
 mobileQuery.addEventListener?.('change', syncAccordionMode);
 syncAccordionMode();
+setupResultViewTracking();
 
 renderIngredients(); renderRecipe(); renderUnitExtras(); renderSavedRecipes(); syncMethodUI(); recalc();
